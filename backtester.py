@@ -199,7 +199,7 @@ def simulate_alternative(
     trades_monkeys = {}
     if monkeys:
         profit_balance_monkeys, trades_monkeys, profit_monkeys, balance_monkeys, monkey_positions_by_timestamp = monkey_positions(monkey_names, states, round)
-        print("End of monkey simulation reached.")
+        print(f"\nEnd of monkey simulation reached.")
         print(f'PNL + BALANCE monkeys {profit_balance_monkeys[max_time]}')
         print(f'Trades monkeys {trades_monkeys[max_time]}')
     if hasattr(trader, 'after_last_round'):
@@ -524,7 +524,7 @@ if __name__ == "__main__":
     names = True
     if 'n' in names_in:
         names = False
-    halfway_in = 'y'#input("Matching orders halfway (default: n) (y/n): ")
+    halfway_in = 'n'#input("Matching orders halfway (default: n) (y/n): ")
     halfway = False 
     if 'y' in halfway_in:
         halfway = True
