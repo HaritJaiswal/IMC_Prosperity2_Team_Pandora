@@ -7,6 +7,7 @@ from datamodel import OrderDepth, UserId, TradingState, Order
 VWAP_DEPTH : int = 3
 OFI_DEPTH : int = 3
 TICK_SIZE : int = 1
+MAX_SPREAD: int = 5 
 
 def min_qty(book : OrderDepth, level : int) -> int:
     ask_qty = 0
@@ -118,15 +119,44 @@ def get_ask_price(px, spread, tick) -> int:
         return int(truncated_px + tick)
     else:
         return int(truncated_px)
+    
+def get_order_flow_imbalance(book: OrderDepth, depth: int) -> float:
+    """
+    Calculate the order flow imbalance (OFI) using the specified depth of the order book.
+    The OFI is a measure of the excess of buy-side or sell-side pressure in the order book.
 
+    Args:
+        book (OrderDepth): The current order book state.
+        depth (int): The number of levels to consider in the order book.
 
-def get_price_prediction(symbol : str, ob_list : List[OrderDepth], ) -> Tuple[float, float, float]:
+    Returns:
+        float: The order flow imbalance value, positive for buy-side pressure, negative for sell-side pressure.
+    """
+    total_buy_volume = sum(float(vol) for price, vol in list(book.buy_orders.items())[:depth])
+    total_sell_volume = sum(float(-vol) for price, vol in list(book.sell_orders.items())[:depth])
+
+    total_volume = total_buy_volume + total_sell_volume
+    if total_volume == 0:
+        return 0.0
+
+    ofi = (total_buy_volume - total_sell_volume) / total_volume
+    return ofi
+
+def get_price_prediction(symbol: str, ob_list: List[OrderDepth]) -> Tuple[float, float, float]:
     vwap = update_vwap(ob_list[-1])
-    spread = 2
-    
-    return vwap, get_bid_price(vwap, spread, TICK_SIZE), get_ask_price(vwap, spread, TICK_SIZE)
-    
-    
+    ofi = get_order_flow_imbalance(ob_list[-1], OFI_DEPTH)
+
+    # Adjust the spread based on the OFI signal
+    spread = 2  # Default spread value
+    if ofi > 0.5:  # Strong buy-side pressure
+        spread = max(1, spread - 1)  # Decrease spread
+    elif ofi < -0.5:  # Strong sell-side pressure
+        spread = min(MAX_SPREAD, spread + 1)  # Increase spread
+
+    bid_price = get_bid_price(vwap, spread, TICK_SIZE)
+    ask_price = get_ask_price(vwap, spread, TICK_SIZE)
+
+    return vwap, bid_price, ask_price
     
     
     

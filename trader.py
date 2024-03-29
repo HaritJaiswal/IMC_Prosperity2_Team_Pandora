@@ -2,7 +2,7 @@ from typing import List
 import string
 
 from datamodel import OrderDepth, UserId, TradingState, Order
-from prediciton import get_price_prediction
+from prediction import get_price_prediction
 class Trader:
     def __init__(self) -> None:
         self.symbol_ob_collection = {}
