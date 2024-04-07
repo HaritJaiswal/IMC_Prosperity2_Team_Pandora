@@ -465,6 +465,7 @@ def create_log_file(round: int, day: int, states: dict[int, TradingState], profi
         f.write('Submission logs:\n\n\n')
         f.write('Activities log:\n')
         f.write(csv_header)
+        net_profit=0
         for time, state in states.items():
             for symbol in SYMBOLS_BY_ROUND[round]:
                 f.write(f'{day};{time};{symbol};')
@@ -509,6 +510,8 @@ def create_log_file(round: int, day: int, states: dict[int, TradingState], profi
                     if time == max_time:
                         if profits_by_symbol[time].get(symbol) != None:
                             print(f'Final profit for {symbol} = {actual_profit}')
+                            net_profit += actual_profit
+        print(f'NET PROFIT = {net_profit}')
         print(f"\nSimulation on round {round} day {day} for time {max_time} complete")
 
 

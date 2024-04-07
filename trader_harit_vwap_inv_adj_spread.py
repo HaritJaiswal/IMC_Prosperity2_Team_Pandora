@@ -107,11 +107,11 @@ def get_inventory_adjusted_min_dist(min_dist, inv) -> int:
     return min_dist + max(0, inv) * min_dist
 
 def get_bid_price(px, position, spread, tick) -> int:
-    adjusted_px = px - (spread + max(0, position)/32)
+    adjusted_px = px - (spread)# + max(0, position)/32)
     return int((adjusted_px//tick) * tick)
 
 def get_ask_price(px, position, spread, tick) -> int:
-    adjusted_px = px + (spread + max(0, -position)/32)
+    adjusted_px = px + (spread)# + max(0, -position)/32)
     truncated_px = (adjusted_px//tick) * tick
     
     if truncated_px < adjusted_px:
@@ -145,8 +145,8 @@ def get_price_prediction(symbol : str, ob_list : List[OrderDepth], position : in
     spread = 1
     vwap = update_vwap(ob_list[-1])
     price_list = [update_vwap(ob) for ob in ob_list[-MOMENTUM_WINDOW:]]
-    momentum = (price_list[-1] - (sum(price_list)/len(price_list)))/price_list[-1] * 100
-    vwap += (-20) * momentum
+    momentum = (price_list[-1] - sum(price_list)/len(price_list))/price_list[-1]
+    
     
     return vwap, get_bid_price(vwap, position, spread, TICK_SIZE), get_ask_price(vwap, position, spread, TICK_SIZE)
     
