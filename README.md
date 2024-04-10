@@ -1,6 +1,6 @@
 # Backtest IMC Prosperity 2023
 
-This is repo contains utilities for IMC Prosperity 2023 challenge.
+This is repo contains utilities for IMC Prosperity 2023 challenge. change
 Right now, it has the [backtester.py](./backtester.py), that should mimic log files from
 the prosperity challenge [platform](https://prosperity.imc.com/).
 The format is good enough to be accepted by jmerle's amazing [project](https://github.com/jmerle/imc-prosperity-visualizer),
